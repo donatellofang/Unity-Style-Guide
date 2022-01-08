@@ -1,1157 +1,709 @@
-# Unity Style Guide
+# 前言
+
+旧目录规则
+
+```PowerShell
+\---Art
++---Enviroments
+|   +---Map_Canyon
+|   |   +---Dec
+|   |   |   +---Materials
+|   |   |   +---Models
+|   |   |   +---Prefabs
+|   |   |   \---Textures
+|   |   +---LBuilding
+|   |   |   +---Materials
+|   |   |   +---Models
+|   |   |   +---Prefabs
+|   |   |   \---Textures
+|   |   +---MBuilding
+|   |   |   +---Materials
+|   |   |   +---Models
+|   |   |   +---Prefabs
+|   |   |   \---Textures
+|   |   +---Physics_Hulls
+|   |   +---Road
+|   |   |   +---Materials
+|   |   |   +---Models
+|   |   |   +---Prefabs
+|   |   |   \---Textures
+|   |   \---SBuilding
+|   |       +---Materials
+|   |       +---Models
+|   |       +---Prefabs
+|   |       \---Textures
+```
+
+## 旧规范优缺点
+
+**缺点**
+
+- 每种游戏对象下很多资产类型的文件夹，比较重复。如M1/(Materials,Models,Textures,Prefabs)。可通过Unity的Project下文件搜索过滤器。
+
+- 场景3D按场景分类资源，场景间资源共用比较少，从场景间分离出共用资源较难快快快*作。
+
+- 资源文件没有单独命名，比较依赖所属分类文件夹。
+
+**优点**
+
+- 主观上展现资产比较清晰
+
+## 新规范优缺点
+
+**优点**
+
+- 美术资源Prefab分离策划程序配置，美术纯资源可直接迁移到美术工程，逻辑配置的预制件不迁移到美术工程。
+- 按预制件美术资源所属名称设置预制件层级Layer？因为是美术资源的预制件，可通过工具批量根据规则设置层级。比如是机甲预制件资源，根据名称和目录自动设置层级。
+
+ 
+
+![img](https://d7n9vj8ces.feishu.cn/space/api/box/stream/download/asynccode/?code=MzU3MDdhOTk1YWFhYTUxZGE0MmQ3YjRmMjA2YzIyYzBfUEgxTkk5emh0czByZXNtNWFYdUF2ZXhxZ2o1RlpnM1ZfVG9rZW46Ym94Y25LQlZVcDhWamJDWjduSnk3WUFEUmxmXzE2NDE2MzQzMzY6MTY0MTYzNzkzNl9WNA)
+
+
+
+- 不再创建文件夹叫Models，Textures，或者Materials。把所有相关类型资产文件放在同一个文件夹。制作人员编辑资源时，方便预制件，模型，材质球，贴图一起编辑。而不是打开一个个文件夹，找到相关资源。制作人员可通过Unity的Project目录资源类别的方法搜索
+
+![img](https://d7n9vj8ces.feishu.cn/space/api/box/stream/download/asynccode/?code=NWQzNGZlNjliMTJhMTU0NjQ2NzNhZjlhZTZhMDU5ZDRfeFpRWGhrU2hBTnRTcU41MTlFWVlieWVBQlVoZTRoc1RfVG9rZW46Ym94Y25nSmI4cmpjcTNtM2hnM2MyVHg5TzFCXzE2NDE2MzQzMzY6MTY0MTYzNzkzNl9WNA)
+
+- 以前最后一个序号只为匹配命名格式，无实际意义，现在可以不填写
+- 场景3D资源Dec改名为Props，因为这些资源会在场景中大量重复使用
+
+## 综上所述
+
+资源文件目录和命名需要考虑的因素有
+
+1. 文件夹命名的粒度
+2. 项目资源文件规划。
+3. 美术资源自动化检查和设置工具
+4. 上下游资源使用的习惯
+5. 不能混用多套目录规则，各组的规则基本保持一致。
+6. 工程结构最好的情况是，一目了然，不需要专门写备注“这是干什么的”
+7. 方便一些自动化工具录入规则：预制件层级设置工具等
+
+# 工程结构
+
+对资源目录的规范管理和资源文件同等重要，都应该像法律一样被严格遵守。不规范的目录结构会导致严重的混乱。
+
+```Shell
+\---Art
+    +---Characters
+    |   +---MaterialLibrary
+    |   +---TexturesLibrary
+    |   +---ModelLibrary    
+    |   +---NPC
+    |   \---Players
+    |       +---M1
+    |       |   +---Configs
+    |       |   \---Animations
+    |       |       +---Body
+    |       |       \---Equip
+    |       \---M5
+    |           |   M_M5_Bag_1.mat
+    |           |   M_M5_WeaponDH_1.mat
+    |           |   P_M5_CloakingL_1_Bip001LThigh_Skin.prefab
+    |           |   P_M5_Model.prefab
+    |           |   P_M5_WeaponDH_1_RH_Skin.prefab
+    |           |   SK_M5_Body_1_Skin.fbx
+    |           |   SK_M5_CloakingL_1_Bip001LThigh_Skin.FBX
+    |           |   SK_M5_WeaponDH_1_RH_Skin.FBX
+    |           |   T_M5_Bag_1_AO.tif
+    |           |   T_M5_Bag_1_D.tif
+    |           |   T_M5_Bag_1_E.tif
+    |           |   T_M5_Bag_1_MADS.png
+    |           |   T_M5_Bag_1_N.tif
+    |           |   
+    |       |   +---Configs
+    |       |   \---Animations
+    |               +---Body
+    |               |       @M5_Ascend1.fbx
+    |               |       @M5_DashB1.fbx
+    |               |       @M5_Melee1_1_LH_MeleeAt1.FBX
+    |               |       @M5_UVAL1_1_Skill2.FBX
+    |               |       
+    |               \---Equip
+    +---Effects
+    |   +---Effect_Scene
+    |   +---Effect_Skill
+    |   +---Effect_Whitebox
+    |   +---Effect_Npc
+    |   +---Common
+    |   |   +---Models
+    |   |   \---Textures
+    +---Environments
+    |   +---Architecture
+    |   |   +---Buildings
+    |   |   |       M_Building_Command_1_1_1.mat
+    |   |   |       Sk_Building_Command_1_1.FBX
+    |   |   |       T_Building_Command_1_1_1_AO.tif
+    |   |   |       T_Building_Command_1_1_1_D.tif
+    |   |   |       T_Building_Command_1_1_1_MADS.tif
+    |   |   |       T_Building_Command_1_1_1_N.tif
+    |   |   |       
+    |   |   +---Indoor
+    |   |   +---Props(包括格纳库道具模型及动画)
+    |   |   \---Roads
+    |   +---Decals
+    |   +---MaterialLibrary
+    |   |   +---Metal
+    |   |   +---Noise
+    |   |   |       T_Noise_1.png
+    |   |   |       T_Noise_Clouds.tif
+    |   |   |       T_Noise_Wind.tif
+    |   |   |       
+    |   |   +---Plastic
+    |   |   \---Soil
+    |   +---Nature
+    |   |   +---Foliage
+    |   |   +---Stones
+    |   |   \---Trees
+    |   +---WhiteBox
+    |   \---Terrain
+    +---Maps
+    |   \---Map_Tokyo
+    +---Shaders
+    |   +---Editor
+    |   +---Graphs
+    |   |       SF_Skin_1.shadergraph
+    |   |       
+    |   \---SubGraphs
+    +---Movie
+    |   +---Movie_Character
+    |       +---TimelineLibrary(共用)
+    |       +---Players
+    |           +---M1
+    |               +---Timeline
+    |               \---Animations
+    |           \---M5
+    |   +---Movie_Map
+    |   +---Movie_Playback
+    |   +---Movie_UI
+    \---UI
+```
+
+**文件目录使用分职能管理文件**
 
-This article contains ideas for setting up a projects structure and a naming convention for scripts and assets in Unity.
+- 特效，Effects文件夹
 
-<a name="toc"></a>
-## Table of Contents
-
-> 1. [Introduction](#introduction)
-> 1. [Project Structure](#structure)
-> 1. [Scripts](#scripts)
-> 1. [Asset Naming Conventions](#anc)
-> 1. [Asset Workflows](#asset-workflows)
-
-<a name="introduction"></a>
-## 1. Introduction
-
-### Sections
-
-> 1.1 [Style](#style)
-
-> 1.2 [Important Terminology](#importantterminology)
-
-<a name="style"></a>
-### 1.1 Style
-
-#### If your project already has a style guide, you should follow it.
-If you are working on a project or with a team that has a pre-existing style guide, it should be respected.  Any inconsistency between an existing style guide and this guide should defer to the existing.
-
-Style guides should be living documents however and you should propose style guide changes to an existing style guide as well as this guide if you feel the change benefits all usages.
-
-> ##### *Arguments over style are pointless. There should be a style guide, and you should follow it.*
-> [_Rebecca Murphey_](https://rmurphey.com)
-
-#### All structure, assets, and code in any project should look like a single person created it, no matter how many people contributed.
-Moving from one project to another should not cause a re-learning of style and structure. Conforming to a style guide removes unneeded guesswork and ambiguities.
-
-It also allows for more productive creation and maintenance as one does not need to think about style, simply follow instructions. This style guide is written with best practices in mind, meaning that by following this style guide you will also minimize hard to track issues.
-
-#### Friends do not let friends have bad style.
-If you see someone working either against a style guide or no style guide, try to correct them.
-
-When working within a team or discussing within a community, it is far easier to help and to ask for help when people are consistent. Nobody likes to help untangle someone's spaghetti code or deal with assets with names they can't understand.
-
-If you are helping someone who's work conforms to a different but consistent and sane style guide, you should be able to adapt to it. If they do not conform to any style guide, please direct them here.
-
-<a name="importantterminology"></a>
-### 1.2 Important Terminology
-
-<a name="terms-prefab"></a>
-#### Prefabs
-Unity uses the term Prefab for a system that allows you to create, configure, and store a GameObject complete with all its components, property values, and child GameObjects as a reusable Asset.
-
-<a name="terms-level-map"></a>
-#### Levels/Maps/Scene
-Levels refer to what some people call maps or what Unity calls Scenes. A level contains a collection of objects.
-
-<a name="terms-serializable"></a>
-#### Serializable
-Variables that are Serializable are shown in the Inspector window in Unity. For more information see Unity's documentation on [Serializable](https://docs.unity3d.com/Manual/script-Serialization.html).
-
-<a name="terms-cases"></a>
-#### Cases
-There are a few different ways you can name things. Here are some common casing types:
-
-> ##### PascalCase
-> Capitalize every word and remove all spaces, e.g. `DesertEagle`, `StyleGuide`, `ASeriesOfWords`.
-> 
-> ##### camelCase
-> The first letter is always lowercase but every following word starts with uppercase, e.g. `desertEagle`, `styleGuide`, `aSeriesOfWords`.
->  ##### lowercase
-> All letters are lowercase, e.g. `deserteagle`, 
->
-> ##### Snake_case
-> Words can arbitrarily start upper or lowercase but words are separated by an underscore, e.g. `desert_Eagle`, `Style_Guide`, `a_Series_of_Words`.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-<a name="structure"></a>
-## 2. Project Structure
-The directory structure style of a project should be considered law. Asset naming conventions and content directory structure go hand in hand, and a violation of either causes unneeded chaos.
-
-In this style, we will be using a structure that relies more on filtering and search abilities of the Project Window for those working with assets to find assets of a specific type instead of another common structure that groups asset types with folders.
-
-> Using a prefix [naming convention](#asset-name-modifiers), using folders to contain assets of similar types such as `Meshes`, `Textures`, and `Materials` is a redundant practice as asset types are already both sorted by prefix as well as able to be filtered in the content browser.
-<pre>
-Assets
-    <a name="#structure-developers">_Developers</a>(Use a `_`to keep this folder at the top)
-        DeveloperName
-            (Work in progress assets)
-    <a name="structure-top-level">ProjectName</a>
-            Characters
-            	Anakin
-            FX
-                Vehicles
-                    Abilities
-                        IonCannon
-                            (Particle Systems, Textures)
-                Weapons
-            Gameplay
-                Characters
-                Equipment
-                Input
-                Vehicles
-                    Abilities
-                    Air
-                        TieFighter
-                            (Models, Textures, Materials, Prefabs)
-            <a name="#structure-levels">_Levels</a>
-                Frontend
-                Act1
-                    Level1
-            Lighting
-                HDRI
-                Lut
-                Textures
-            MaterialLibrary
-            	Debug
-            	Shaders
-            Objects
-                Architecture (Single use big objects)
-                    DeathStar
-                Props (Repeating objects to fill a level)
-                    ObjectSets
-                        DeathStar
-            Scripts
-                AI
-                Gameplay
-                    Input
-                Tools
-            Sound
-                Characters
-                Vehicles
-                    TieFighter
-                        Abilities
-                            Afterburners
-                Weapons
-            UI
-                Art
-                    Buttons
-                Resources
-                    Fonts
-    ExpansionPack (DLC)
-    Plugins
-    ThirdPartySDK  
-</pre>
+- 地编，Maps文件夹
 
+- 场景模型，Enviroments文件夹
+
+- 角色模型，Characters文件夹
+
+- 设计，UI文件夹
+
+- 着色器（TA），Shaders文件夹
+
+
+
+## 文件夹命名
+
+### 文件夹命名约定
+
+- 使用PascalCase大小写规范
+
+ 文件夹的命名需要遵守PascalCase规范，也就是所有单词的首字母大写，并且中间没有任何连接符。例如DesertEagle, RocketPistol, and ASeriesOfWords，参照大小写规范。
+
+- 不要使用空格
+
+ 绝对不要在目录名中使用空格。空格会导致引擎以及其他命令行工具出现错误，同样，也不要把你的工程放在包含有空格的目录下面。
+
+- 不要使用其他Unicode语言字符或奇怪的符号
+
+ 如果你游戏中的角色的名字叫做'Zoë'，那么文件夹要其名为Zoe。在目录名中使用这样的字符的后果甚至比使用空格还严重，因为某些引擎工具在设计时压根就没有考虑这种情况。
+
+- 记住永远在目录名中只使用a-z, A-Z, 和 0-9这些安全的字符，如果你使用了类似于`@, -, _, ,, *, 或者 #`这样的字符，一些软件和工具会出问题。
+
+### 文件夹类型表
+
+#### 场景3D
+
+| **场景元素类型** |                                      |
+| ---------------- | ------------------------------------ |
+| Building         | 建筑物                               |
+| Indoor           | 室内（不与室外模型一体的室内、通道） |
+| Prop             | 小物件                               |
+| Child            | 挂件（只会挂靠在其他建筑上的物件）   |
+| Road             | 道路（面数比较高）                   |
+| Inside           | 破碎建筑物等物体的內构               |
+| Tree             | 树                                   |
+| Foliage          | 灌木丛，花草，蕨类植物               |
+| Decal            | 场景贴花                             |
+| Stone            | 石头，岩石，悬崖                     |
+| Destruction      | 破碎体                               |
+| Terrain          | 地形                                 |
+
+
+
+## 目录使用
+
+请不要将未使用的美术资源放到主干工程，可放在美术工程。
+
+### 通用资源Library
+
+如果项目使用主材质，layered materials，或任何形式的可重用材质或纹理，不属于资产的任何子集，这些资产应该位于这里。如下面文件夹
+
+- 3D材质库（MaterialLibrary），放一些通用的材质球,Tilling材质可放在这里，命名中不用加Tilling。
+
+- 3D贴图库（TextureLibrary）,放一些通用的贴图，和一些Noise贴图。
+- 特效通用资源库（TextureLibrary）
+- UI通用资源库（GUILibrary）
+
+# 资源命名约定
+
+对于资源的命名的规范应该像法律一样被遵守。一个项目如果有好的命名规范，那么在资源管理、查找、解析、维护时，都会有极大的便利性。
+
+## 基本命名规则 `前缀_基础资产名称_变体_后缀`
+
+（旧基本命名规则）元素类型_场景名称_美术自定义名字_排序
+
+记住`前缀_基础资产名称_变体_后缀`模式并按照常识就可以保证良好的资产名称。以下是关于每个元素的一些详细规则。
+
+**前缀和后缀**由资产类型通过下面的资产名称缩写表确定。后缀如果没有可为空
+
+**基础资产名称**表示**相关资产的逻辑分组**，所有资产都应该有一个基础资产名称，**基础资产名称字段只能有一**个。这个逻辑组中的任何资产都应该遵循`前缀_基础资产名称_变体_后缀`。基础资产名称应该由与这组资产的上下文相关的简短且易于识别的名称确定。例如，如果有一个名为M1的机甲角色，那么M1的所有资产都将具有M1的基础资产名称。
+
+**变体**是一个简短且易于识别的名称，对于资产的独特和特定变体，表示资产的逻辑分组，这些资产是**基本资产名称的子集**。对于资产的唯一但通用的变体，Variant是一个从1开始的数字。例如，如果生成一些难以描述的岩石，那么它们就会被命名为Rock_1、Rock_2、Rock_3等等。如果有超过100个资产，应该考虑使用不同的基名或使用多个变体名来组织它们。
+
+根据资产变体的制作方式，您可以将变体名称链接在一起，**变体字段可以多个**。例如，如果正在创建地板资产，应该使用基本名称Flooring，并带有**连锁变体**，如Flooring_Marble_1， Flooring_Maple_1，Flooring_Tile_Squares_1，P_Building_Wall_1_Base，P_Building_Wall_2_Base，P_Building_Wall_1_A。T_Dirt_Blue_D,M_Dirt_Blue
 
+
 
+变体名可用用阿拉伯数字来排序，**兄弟用A,B,C,D****（同一个妈生的）**。
 
-The reasons for this structure are listed in the following sub-sections.
+**使用前缀的好处**
 
-### Sections
+- List item添加前缀来区分资产类型，例如“P_”命名预制件，"Scn_"命名场景。当我们发现预制件和模型很容易混淆时，我们开始使用前缀。
+- 当把材质球，预制件，模型，贴图放在一起时，命名带有前缀，可区分不同类型资源，因为旧规则不同类型资源会有重名。
+- 这种方法的另一个优点是，在搜索字段中输入"P_Bear"而不是t:Prefab Bear，它更短。
 
-> 2.1 [Folder Names](#structure-folder-names)
+## 资产名称缩写表
 
-> 2.2 [Top-Level Folders](#structure-top-level)
+当给一个资源命名的时候，请参照以下表格来决定在基本资源名前所使用的前缀
 
-> 2.3 [Developer Folders](#structure-developers)
+### 全局
 
-> 2.4 [Levels](#levels)
+| **资产类型**            | **前缀** | **后缀**  | **备注**                                                     |
+| ----------------------- | -------- | --------- | ------------------------------------------------------------ |
+| Scene                   | *        |           | 例如 `Scenes/A4_C17_Parking_Garage.unity`                    |
+| Scene (Lighting)        |          | _Lighting |                                                              |
+| Scene (Geometry)        |          | _Geo      |                                                              |
+| Scene (Gameplay)        |          | _Gameplay |                                                              |
+| Prefab                  | P_       |           |                                                              |
+| Probe (Reflection)      | RP_      |           |                                                              |
+| Probe (Light)           | LP_      |           |                                                              |
+| Volume                  | V_       |           |                                                              |
+| Trigger Area            |          | _Trigger  |                                                              |
+| Material                | M_       |           |                                                              |
+| Physical Material       | PM_      |           | 物理材质球                                                   |
+| Static Mesh             | SM_      |           |                                                              |
+| Animation Mesh          | @        |           | @M5_Ascend1.fbx                                              |
+| Skeletal Mesh           | SK_      |           |                                                              |
+| Bone Constraint配置文件 | BC_      |           | Blender的骨骼约束文件，存放位置例如：M1/Configs/BC_M12_Arm_1_L |
+| Slot插槽配置文件        | Slot_    |           | 特效或者机甲水贴插槽配置文件，M1/Configs/Slot_M12_1          |
+| Destructible Mesh       | DM_      |           | 破碎模型                                                     |
+| Mesh Collider模型       | SM_      | _Collider | 区别于原始模型专门做的                                       |
+| Skeleton                | SKEL_    |           |                                                              |
+| Rig                     | RIG_     |           |                                                              |
+| Animation Clip          | A_       |           |                                                              |
+| Animation Controller    | AC_      |           |                                                              |
+| Avatar Mask             | AM_      |           |                                                              |
+| Texture                 | T_       | _?        | 见贴图                                                       |
+| Visual Effects          | VFX_     |           |                                                              |
+| Particle System         | PS_      |           |                                                              |
+| Light                   | L_       |           |                                                              |
+| Camera (Cinemachine)    | CM_      |           | Virtual Camera                                               |
 
-> 2.5 [Define Ownership](#structure-ownership)
 
-> 2.6 [`Assets` and `AssetTypes`](#structure-assettypes)
 
-> 2.7 [Large Sets](#structure-large-sets)
+### 贴图
 
-> 2.8 [Material Library](#structure-material-library)
+文件扩展名: `PNG`, `TIFF` or `HDR`
 
-> 2.9 [Scene Structure](#scene-structure)
+| **贴图名称**    | **贴图类别**                    | **前缀** | **后缀** | **备注**       |
+| --------------- | ------------------------------- | -------- | -------- | -------------- |
+| 颜色贴图        | Base Color : (tif 48位）        | T_       | _D       |                |
+| 颜色贴图带Alpha | Base Color With Alpha/Opacity   | T_       | _A       |                |
+| 混合贴图        | Texture (Packed) (tif 64位）    | T_       | _*       | *可看下面表    |
+| 法线贴图        | Normal Map : (tif 48位）        | T_       | _N       |                |
+| 自发光贴图      | Emission : (tif 48位）          | T_       | _E       |                |
+| AO贴图          | Ambient Occlusion : (tif 48位） | T_       | _AO      |                |
+| 曲率图          |                                 | T_       | _C       |                |
+| 油污图          |                                 | T_       | _G       |                |
+| 序列图          | 可有不同贴图类型                | TS_      | _*       | TS_X_D，TS_X_N |
+| 遮罩            |                                 |          |          |                |
+| 地形高度贴图    | Height :(tif 48位)              |          | _H       |                |
+| Cubemap贴图     | Cubemap:(exr)                   | TC_      |          |                |
+| Render Target   |                                 | RT_      |          |                |
 
 
-<a name="2.1"></a>
-<a name="structure-folder-names"><a>
-### 2.1 Folder Names
-These are common rules for naming any folder in the content structure.
 
-<a name="2.1.1"></a>
-#### Always Use [PascalCase](#terms-cases)
-PascalCase refers to starting a name with a capital letter and then instead of using spaces, every following word also starts with a capital letter. For example, `DesertEagle`, `RocketPistol`, and `ASeriesOfWords`.
+不分二方连续或者四方连续贴图，由材质名称即可判定
 
-<a name="2.1.2"></a>
-#### Never Use Spaces
-Re-enforcing [2.1.1](#2.1.1), never use spaces. Spaces can cause various engineering tools and batch processes to fail. Ideally your project's root also contains no spaces and is located somewhere such as `D:\Project` instead of `C:\Users\My Name\My Documents\Unity Projects`.
+#### 贴图合并
 
-<a name="2.1.3"></a>
-#### Never Use Unicode Characters And Other Symbols
-If one of your game characters is named 'Zoë', its folder name should be `Zoe`. Unicode characters can be worse than [Spaces](#2.1.2) for engineering tools and some parts applications don't support Unicode characters in paths either.
+通常的做法是将多层纹理数据打包到一个纹理数据中。 这方面的一个例子是将金属度、环境遮蔽、细节遮罩、光滑度、分别打包为纹理的红、绿、蓝、Alpha通道。 要确定后缀，只需将上面给定的后缀字母堆叠在一起，例如_MADS。 图示如下：
 
-Related to this, if your project has and your computer's user name has a Unicode character (i.e. your name is `Zoë`), any project located in your `My Documents` folder will suffer from this issue. Often simply moving your project to something like `D:\Project` will fix these mysterious issues.
+![img](https://d7n9vj8ces.feishu.cn/space/api/box/stream/download/asynccode/?code=OTkzNjQ2M2ZhNzQxZTY4MGMxYmY2MDFjOTkzOWYxZmZfWVRQcGszR2FzM0p3RHF1N2lCMVVKRGFTWTNQOERzcHhfVG9rZW46Ym94Y245VThhMDVvWWc2alJoaDNJQ1dhZU5oXzE2NDE2MzQzMzc6MTY0MTYzNzkzN19WNA)
 
-Using other characters outside `a-z`, `A-Z`, and `0-9` such as `@`, `-`, `_`, `,`, `*`, and `#` can also lead to unexpected and hard to track issues on other platforms, source control, and weaker engineering tools. 
+ 注意当MADS贴图导入Unity请不要勾sRGB。
 
-<a name="structure-no-empty-folders"></a>
-#### No Empty Folders
-There simply shouldn't be any empty folders. They clutter the content browser.
+### LOD
 
-If you find that the content browser has an empty folder you can't delete, you should perform the following:
-1. Be sure you're using source control.
-1. Navigate to the folder on-disk and delete the assets inside.
-1. Close the editor.
-1. Make sure your source control state is in sync (i.e. if using Perforce, run a Reconcile Offline Work on your content directory)
-1. Open the editor. Confirm everything still works as expected. If it doesn't, revert, figure out what went wrong, and try again.
-1. Ensure the folder is now gone.
-1. Submit changes to source control.
+| **模型文件等级** | **文件后缀** | **备注**                     |
+| ---------------- | ------------ | ---------------------------- |
+| HD               | _HD          | 展示型模型，不用于战斗场景中 |
+| LOD 第0级        |              | 模型面数最多                 |
+| LOD第一级        | _LOD1        |                              |
+| LOD第二级        | _LOD2        |                              |
+| LOD第三级        | _LOD3        | 模型面数最低，模型简模轮廓   |
 
-<a name="2.2"></a>
-<a name="structure-top-level"><a>
-### 2.2 Use A Top Level Folder For Project Specific Assets
-All of a project's assets should exist in a folder named after the project. For example, if your project is named 'Generic Shooter', _all_ of it's content should exist in `Assets/GenericShooter`.
 
-> The `Developers` folder is not for assets that your project relies on and therefore is not project specific. See [Developer Folders](#2.3) for details about this.
 
-There are multiple reasons for this approach.
+### 关卡文件
 
-<a name="2.2.1"></a>
-#### No Global Assets
-Often in code style guides it is written that you should not pollute the global namespace and this follows the same principle. When assets are allowed to exist outside of a project folder it often becomes much harder to enforce a strict structure layout as assets not in a folder encourages the bad behavior of not having to organize assets.
+无法复制加载中的内容
 
-Every asset should have a purpose, otherwise it does not belong in a project. If an asset is an experimental test and shouldn't be used by the project it should be put in a [`Developer`](#2.3) folder.
+关卡分成多个加载场景，美术资源场景，灯光场景
 
-<a name="2.2.2"></a>
-#### Reduce Migration Conflicts
-When working on multiple projects it is common for a team to copy assets from one project to another if they have made something useful for both. 
+### 场景3D
 
-By placing all project specific assets in a top level folder you reduce the chance of migration conflict when importing those assets into a new project.
+#### 文件命名中的变体字段
 
-<a name="2.2.2e1"></a>
-##### Master Material Example
-For example, say you created a master material in one project that you would like to use in another project so you migrated that asset over. If this asset is not in a top level folder, it may have a name like `Assets/MaterialLibrary/M_Master`. If the target project doesn't have a master material already, this should work without issue.
+可能是下面这些，可新增
 
-As work on one or both projects progress their respective master materials may change to be tailored for their specific projects due to the course of normal development.
+| **变体名称** | **英文名称** | **备注**         |
+| ------------ | ------------ | ---------------- |
+| 是否破碎     | Break        |                  |
+| 是否动画     | Anim         |                  |
+| 底座         | Base         |                  |
+| 是否合组     | Group        | 对预制件打组生成 |
 
-The issue comes when, for example, an artist for one project created a nice generic modular set of static meshes and someone wants to include that set of static meshes in the second project. If the artist who created the assets used material instances based on `Assets/MaterialLibrary/M_Master` as they're instructed to, when a migration is performed there is a great chance of conflict for the previously migrated `Assets/MaterialLibrary/M_Master` asset.
+#### 物理文件
 
-This issue can be hard to predict and hard to account for. The person migrating the static meshes may not be the same person who is familiar with the development of both project's master material, and they may not be even aware that the static meshes in question rely on material instances which then rely on the master material. The Migrate tool requires the entire chain of dependencies to work however, and so it will be forced to grab `Assets/MaterialLibrary/M_Master` when it copies these assets to the other project and it will overwrite the existing asset.
+| **资产类型**      | **前缀** | **后缀** | **备注** |
+| ----------------- | -------- | -------- | -------- |
+| Physical Material | PM_      |          |          |
+| Physics Asset     | PHYS_    |          | 破碎     |
+| Destructible Mesh | DM_      |          |          |
 
-It is at this point where if the master materials for both projects are incompatible in _any way_, you risk breaking possibly the entire material library for a project as well as any other dependencies that may have already been migrated, simply because assets were not stored in a top level folder. The simple migration of static meshes now becomes a very ugly task.
+#### 3D 模型 (3ds Max或者Blender)
 
-<a name="2.2.3"></a>
-#### Samples, Templates, and 3rd Party Content Are Risk-Free
-An extension to [2.2.2](#2.2.2), if a team member decides to add sample content, template files, or assets they bought from a 3rd party, it is guaranteed that these new assets will not interfere with the project in any way unless your project's top level folder is not uniquely named.
+3ds Max中的所有网格
 
-You can not trust 3rd party content to fully conform to the [top level folder rule](#2.2). There exist many assets that have the majority of their content in a top level folder but also have possibly modified Unity sample content as well as level files polluting the global `Assets` folder.
+| **资产类型**  | **前缀** | **后缀**   | **备注**                     |
+| ------------- | -------- | ---------- | ---------------------------- |
+| Mesh          |          | Mesh_LOD1* | 如果模型使用LOD,使用后缀lod* |
+| Mesh Collider |          | _Collider  |                              |
 
-When adhering to [2.2](#2.2), the worst 3rd party conflict you can have is if two 3rd party assets both have the same sample content. If all your assets are in a project specific folder, including sample content you may have moved into your folder, your project will never break.
+#### 
 
-#### DLC, Sub-Projects, and Patches Are Easily Maintained
-If your project plans to release DLC or has multiple sub-projects associated with it that may either be migrated out or simply not cooked in a build, assets relating to these projects should have their own separate top level content folder. This make cooking DLC separate from main project content far easier. Sub-projects can also be migrated in and out with minimal effort. If you need to change a material of an asset or add some very specific asset override behavior in a patch, you can easily put these changes in a patch folder and work safely without the chance of breaking the core project.
+例：
 
-<a name="2.3"></a>
-<a name="structure-developers"></a>
-### 2.3 Use Developers Folder For Local Testing
-During a project's development, it is very common for team members to have a sort of 'sandbox' where they can experiment freely without risking the core project. Because this work may be ongoing, these team members may wish to put their assets on a project's source control server. Not all teams require use of Developer folders, but ones that do use them often run into a common problem with assets submitted to source control.
+场景建筑物
 
-It is very easy for a team member to accidentally use assets that are not ready for use which will cause issues once those assets are removed. For example, an artist may be iterating on a modular set of static meshes and still working on getting their sizing and grid snapping correct. If a world builder sees these assets in the main project folder, they might use them all over a level not knowing they could be subject to incredible change and/or removal. This causes massive amounts of re-working by everyone on the team to resolve.
+| **资产类型** | **资产名字**       |
+| ------------ | ------------------ |
+| 预制件       | P_Flooring_Marble  |
+| 模型         | SM_Flooring_Marble |
+| 材质         | M_Flooring_Marble  |
+| 贴图         | T_Flooring_Marble  |
 
-If these modular assets were placed in a Developer folder, the world builder should never of had a reason to use them and the whole issue would never happen.
+岩石
 
-Once the assets are ready for use, an artist simply has to move the assets into the project specific folder. This is essentially 'promoting' the assets from experimental to production.
+| **资产类型**           | **资产名字** |
+| ---------------------- | ------------ |
+| Static Mesh (1)        | S_Rock_1     |
+| Static Mesh (2)        | S_Rock_2     |
+| Static Mesh (3)        | S_Rock_3     |
+| Material               | M_Rock       |
+| Material Variant(Snow) | M_Rock_Snow  |
 
+| **资产类型**   | **资产名字**    |
+| -------------- | --------------- |
+| 底座残骸预制件 | P_Building_Base |
 
-<a name="levels"></a>
-### 2.4 All [Scene](#terms-level-map) Files Belong In A Folder Called Levels
-Level files are incredibly special and it is common for every project to have its own map naming system, especially if they work with sub-levels or streaming levels. No matter what system of map organization is in place for the specific project, all levels should belong in `Assets/ProjectNameName/Levels`.
+#### Unity HDRP Decal Projector
 
-Being able to tell someone to open a specific map without having to explain where it is is a great time saver and general 'quality of life' improvement. It is common for levels to be within sub-folders of `Levels`, such as `Levels/Campaign1/` or `Levels/Arenas`, but the most important thing here is that they all exist within `Assets/ProjectNameName/Levels`.
+| **资产类型** | **资产名字**  |
+| ------------ | ------------- |
+| 预制件       | P_Decal_Stain |
+| 材质         | M_Decal_Stain |
+| 贴图         | T_Decal_Stain |
 
-This also simplifies the job of cooking for engineers. Wrangling levels for a build process can be extremely frustrating if they have to dig through arbitrary folders for them. If a team's levels are all in one place, it is much harder to accidentally not cook a map in a build. It also simplifies lighting build scripts as well QA processes.
+#### 
 
-<a name="2.5"></a>
-<a name="structure-ownership"></a>
-### 2.5 Define Ownership
-In teams of more than one, define ownership of zone/assets/features. Some assets like scenes or prefabs do not handle simultaneous changes by multiple people very well, creating conflict. Having a single person who can change (or give the right to change) a given assets helps to avoid that problem.
 
-<a name="2.6"></a>
-<a name="structure-assettypes"></a>
-### 2.6 Do Not Create Folders Called `Assets` or `AssetTypes`
 
-<a name="2.6.1"></a>
-#### Creating a folder named `Assets` is redundant.
-All assets are assets.
+### 角色3D
 
-<a name="2.6.2"></a>
-#### Creating a folder named `Meshes`, `Textures`, or `Materials` is redundant.
-All asset names are named with their asset type in mind. These folders offer only redundant information and the use of these folders can easily be replaced with the robust and easy to use filtering system the Content Browser provides.
+大类共同命名（X）FBX带骨骼绑定FBX预制件材质贴图动画共同命名例子:机身机甲编号_机身部位_机身部位编号SM_XSK_XP_XM_XT_X_贴图类别@机甲编号_机身部位_机身部位编号_动画名字M1_Head_1手臂和腿要分左右
+机甲编号_机身部位_机身部位编号_左右M1_Arm_1_L
+M1_Arm_1_R
+M1_Leg_1_L
+M1_Leg_1_R装备（含武器）机甲编号_装备类型_装备编号_左右SM_XSK_XP_XM_XT_X_贴图类别@机机甲编号_装备类型_装备编号_动画名字M1_WeaponBHL_1
 
-Want to view only static mesh in `Environment/Rocks/`? Simply turn on the Static Mesh filter. If all assets are named correctly, they will also be sorted in alphabetical order regardless of prefixes. Want to view both static meshes and skeletal meshes? Simply turn on both filters. this eliminates the need to potentially have to `Control-Click` select two folders in the Content Browser's tree view.
+M1_ArmWeapon_1_L
 
-> This also extends the full path name of an asset for very little benefit. The `SM_` prefix for a static mesh is only three characters, whereas `Meshes/` is seven characters.
+#### 机甲编号
 
-Not doing this also prevents the inevitability of someone putting a static mesh or a texture in a `Materials` folder.
+机甲编号
 
-<a name="2.7"></a>
-<a name="structure-large-sets"></a>
-### 2.7 Very Large Asset Sets Get Their Own Folder Layout
+| **机甲编号**   | **ID（序号累加）** | **名称**       | **英文名称** |
+| -------------- | ------------------ | -------------- | ------------ |
+| M              | 1                  | 小白           | M1           |
+| **驾驶员编号** | **ID**             | **名称**       | **英文名称** |
+| C              | 1                  | 驾驶员         | C1           |
+| **NPC编号**    | **ID**             | **名称**       | **英文名称** |
+| NRA            | 1                  | NPC机甲0.3强度 | NRA1         |
+| NRB            | 1                  | NPC机甲0.5强度 | NRB1         |
+| NV             | 1                  | NPC载具        | NV1          |
+| NT             | 1                  | 防御塔单位     | NT1          |
+| NB             | 1                  | Boss类单位     | NB1          |
 
-This can be seen as a pseudo-exception to [2.6](#2.6).
+#### **角色驾驶员**
 
-There are certain asset types that have a huge volume of related files where each asset has a unique purpose. The two most common are Animation and Audio assets. If you find yourself having 15+ of these assets that belong together, they should be together.
+编号：C加序号
 
-For example, animations that are shared across multiple characters should lay in `Characters/Common/Animations` and may have sub-folders such as `Locomotion` or `Cinematic`.
+**模型命名**
 
-> This does not apply to assets like textures and materials. It is common for a `Rocks` folder to have a large amount of textures if there are a large amount of rocks, however these textures are generally only related to a few specific rocks and should be named appropriately. Even if these textures are part of a [Material Library](#2.8).
+前缀_驾驶员编号_部位_序号
 
-<a name="2.8"></a>
-<a name="structure-material-library"></a>
-### 2.8 `MaterialLibrary`
+例：
 
-If your project makes use of master materials, layered materials, or any form of reusable materials or textures that do not belong to any subset of assets, these assets should be located in `Assets/ProjectName/MaterialLibrary`.
+SM_C1_Body_1     
 
-This way all 'global' materials have a place to live and are easily located.
+硬表面部位，前缀_驾驶员编号_TrimSheet_序号
 
-> This also makes it incredibly easy to enforce a 'use material instances only' policy within a project. If all artists and assets should be using material instances, then the only regular material assets that should exist are within this folder. You can easily verify this by searching for base materials in any folder that isn't the `MaterialLibrary`.
+例：
 
-The `MaterialLibrary` doesn't have to consist of purely materials. Shared utility textures, material functions, and other things of this nature should be stored here as well within folders that designate their intended purpose. For example, generic noise textures should be located in `MaterialLibrary/Utility`.
+SM_C1_TrimSheet_1
 
-Any testing or debug materials should be within `MaterialLibrary/Debug`. This allows debug materials to be easily stripped from a project before shipping and makes it incredibly apparent if production assets are using them if reference errors are shown.
+**材质球命名**
 
-<a name="2.9"></a>
-<a name="scene-structure"></a>
-## 2.9 Scene Structure
-Next to the project’s hierarchy, there’s also scene hierarchy. As before, we’ll present you a template. You can adjust it to your needs. Use named empty game objects as scene folders.
+ 前缀_驾驶员编号_部位_序号
 
-<pre>
-Debug
-Management
-UI
-Cameras
-Lights
-World
+例：
+
+M_C1_Body_1
+
+硬表面部位，前缀_驾驶员编号_颜色_序号
+
+例：
+
+M_C1_Black_1 
+
+#### 武器、装备命名
+
+| 武器装备前加挂载点名称 |           |          |                                                              |
+| ---------------------- | --------- | -------- | ------------------------------------------------------------ |
+| 挂载点                 | 命名      |          | + 后缀L  R  BH  DH  SH                                       |
+| Hand         手        | HandX     | 手持     | 例：HandX_1_BH          两把武器，双持                           _DHL         一把武器左手拿右手扶                   _DHR        一把武器右手拿左手扶                   _SHL         一把武器左手拿                   _SHR        一把武器右手拿    HandX_1_L               左臂挂载武器    HandX_1_R              右臂挂载武器 + 后缀L  R  BH  DH  SH  区分左右，不加则不分左右 |
+| Arm           手臂     | ArmX      | 手臂挂载 |                                                              |
+| shoulder    肩         | shoulderX | 肩部挂载 |                                                              |
+| Back          背部     | BackX     | 背部挂载 |                                                              |
+| Leg            腿部    | LegX      | 腿部挂载 |                                                              |
+
+
+
+| 武器装备命名(X)                   |              |
+| --------------------------------- | ------------ |
+| Rifle                             | 步枪         |
+| Pistol                            | 手枪         |
+| Cannon                            | 加农炮       |
+| Grenade                           | 投弹炮       |
+| Funnel                            | 浮游炮       |
+| Electromagnetism                  | 电磁炮       |
+| Axe                               | 斧头         |
+| Hooklock                          | 勾爪         |
+| Shield                            | 盾牌         |
+| Spear                             | 长矛         |
+| Hammer                            | 长锤子       |
+| Sword                             | 长\短剑      |
+| RobotArmKnife                     | 机械臂刀类   |
+| RobotArmGun                       | 机械臂枪炮类 |
+| launcher                          | 发射装置     |
+| Scanner                           | 扫描装置     |
+| Cloaking                          | 隐身装置     |
+| Energy+武器名称                   |              |
+| EnergyWeapon                      | 能量武器     |
+| 装备名称+ L  R   不加代表不分左右 |              |
+| Bag                               | 背包         |
+| Missile                           | 导弹舱       |
+| MissileL                          | 导弹舱 左    |
+| MissileR                          | 导弹舱 右    |
+| Uav                               | 无人机       |
+
+
+
+#### 机身部位
+
+| **机身部位** | **名称** | **范围描述**        | **图示颜色** |
+| ------------ | -------- | ------------------- | ------------ |
+| 躯干         | Torso    | 躯干,胸，腹，驾驶舱 | 绿色         |
+| 头           | Head     | 天线，头，脖子      | 黄色         |
+| 手           | Arm      | 肩，手臂，手掌      | 紫色         |
+| 腿           | Leg      | 大腿，小腿，脚掌    | 红色         |
+
+
+
+如图：不同颜色代表不同部位换装（图示仅参考）
+
+![img](https://d7n9vj8ces.feishu.cn/space/api/box/stream/download/asynccode/?code=YzA3ZDA3MzY4MjBkYWE4OWE3Njc3Yzk5MDU2MDI4YzBfTGZXVHNoZVBUMnM0QklqajZpT25WbW9ZWk8waVZiUjdfVG9rZW46Ym94Y256YU1GZG12cm12WWdvWTlDeUp1ZFFlXzE2NDE2MzQzMzg6MTY0MTYzNzkzOF9WNA)
+
+
+
+动画名字是不确定命名字段。
+
+如果是临时模型，需加后缀字段_Temp。临时模型不会对文件进行规则检查。
+
+例：SK_M2_Torso_1_Temp
+
+
+
+例
+
+机甲M1相关资源命名
+
+| **资产类型**             | **资产名字**  |
+| ------------------------ | ------------- |
+| Skeletal Mesh            | SK_M1_Torso_1 |
+| Material                 | M_M1_Torso_1  |
+| Texture (Diffuse/Albedo) | T_M1_Torso_D  |
+| Texture (Normal)         | T_M1_Torso_N  |
+| Texture (Body Diffuse)   | T_M1_Torso_D  |
+
+#### **材质球**
+
+##### **基础材质**
+
+前缀_机体编号_部件颜色（自定义）_序号(从数字1开始）
+
+例：M_M1_Red_1
+
+  M_M1_Yellow_1
+
+##### **自发光材质**
+
+前缀_机体编号_部件颜色_序号_E
+
+例：M_M1_Yellow_1_E
+
+##### **功能灯光材质**
+
+前缀_机甲编号_灯光功能\部件_序号_E
+
+例：M_M1_Propeller_1_E  喷口灯光
+
+| 灯光功能    |            |
+| ----------- | ---------- |
+| Propeller   | 喷口       |
+| Polishing   | 系统提示   |
+| Ultimate    | 大招提示   |
+| Ultimate_CD | 大招CD提示 |
+| EIC         | EIC能量    |
+| Braking     | 推进器     |
+
+
+
+### Decalmachine资产文件
+
+| **资产类型**         | **基础资产名称** | 备注                         |
+| -------------------- | ---------------- | ---------------------------- |
+| 刻线类贴花或者裁剪片 | PanelAtlas       |                              |
+| 凹凸细节贴花         | NormalAtlas      | 合并SimpleAtlas和SubsetAtlas |
+| 裁剪片               | TrimSheets       |                              |
+| 水贴                 | InfoAtlas        |                              |
+
+适用贴图命名
+
+|                                                     | 前缀 | 后缀  | PanelAtlas        | NormalAtlas        | TrimSheets        | InfoAtlas     |
+| --------------------------------------------------- | ---- | ----- | ----------------- | ------------------ | ----------------- | ------------- |
+| 颜色贴图带Alpha                                     | T_   | _A    |                   |                    |                   | T_InfoAtlas_A |
+| (R)Ao (G)Curvature (B)Height (A)SubsetMask 遮罩贴图 | T_   | _ACHS | T_PanelAtlas_ACHS | T_NormalAtlas_ACHS | T_TrimSheets_ACHS |               |
+| 法线贴图                                            | T_   | _N    | T_PanelAtlas_N    | T_NormalAtlas_N    | T_TrimSheets_N    |               |
+| 自发光贴图                                          | T_   | _E    |                   | T_NormalAtlas_E    | T_TrimSheets_E    |               |
+
+
+
+### UI
+
+| **资产类型**     | **前缀** | **后缀** | **备注** |
+| ---------------- | -------- | -------- | -------- |
+| Font             | Font_    |          |          |
+| Texture (Sprite) | T_       | _GUI     |          |
+
+
+
+| 前缀 | 基础资产名称 | 变体1 | 变体2  | 变体3    | 后缀 |
+| ---- | ------------ | ----- | ------ | -------- | ---- |
+|      | 系统         | 模块  | 子系统 | 元件序号 |      |
+
+
+
+## 
+
+#### 
+
+### Shader命名规则
+
+根据Shader的功能来分类文件夹。命名中前缀可用SG_（Shadergraph编写）,
+
+ 如特效通用Shader:SG_StandardEffect
+
+
+
+### Movie影音组命名
+
+| 类别            | Timeline命名                              |                                                              |
+| --------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| Movie_Map       | TL_场景名称（_子场景名称）_美术资源名称_1 | Map_Factory/TL_Zhengbeicang_ChangePlayer_1.playable，P_Zhengbeicang_ChangePlayer_1.prefab |
+| Movie_Character | TL_M1_Out_1 TL_M1_Skill_1                 |                                                              |
+| Movie_UI        |                                           |                                                              |
+| Movie_Playback  |                                           |                                                              |
+
+
+
+
+
+# 角色3D要求
+
+### 面数
+
+| 级别 | 模型面数（三角面） | 备注       |
+| ---- | ------------------ | ---------- |
+| LOD0 | 十万以内           | 不包含倒角 |
+
+### 材质球数量
+
+十个以内（包含十个）
+
+# 场景层级结构
+
+一个关卡可含多个场景
+
+```
+美术资源场景
+    Architecture
+    Nature
     Terrain
-    Props
-Gameplay
-	Actors
-	Items
-_Dynamic
-</pre>
+    Decals
+    Effect
 
- - All empty objects should be located at 0,0,0 with default rotation and scale.
- - For empty objects that are only containers for scripts, use “@” as prefix – e.g. @Cheats
- - When you’re instantiating an object in runtime, make sure to put it in _Dynamic – do not pollute the root of your hierarchy or you will find it difficult to navigate through it.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-<a name="scripts"></a>
-
-## 3. Scripts
-
-This section will focus on C# classes and their internals. When possible, style rules conform to Microsoft's C# standard.
-
-### Sections
-> 3.1 [Class Organization](#classorganization)
-
-> 3.2 [Compiling](#compiling)
-
-> 3.3 [Variables](#variables)
-
-> 3.4 [Functions](#functions)
-
-<a name="classorganization"></a>
-### 3.1 Class Organization
-Source files should contain only one public type, although multiple internal classes are allowed.
-
-Source files should be given the name of the public class in the file.
-
-Organize namespaces with a clearly defined structure,
-
-Class members should be alphabetized, and grouped into sections:
-* Constant Fields
-* Static Fields
-* Fields
-* Constructors
-* Properties
-* Events / Delegates
-* LifeCycle Methods (Awake, OnEnable, OnDisable, OnDestroy)
-* Public Methods
-* Private Methods
-* Nested types
-
-Within each of these groups order by access:
-* public
-* internal
-* protected
-* private
-```
-namespace ProjectName
-{
-	/// <summary>  
-	/// Brief summary of what the class does
-	/// </summary>
-    public class Account
-    {
-      #region Fields
-      
-      [Tooltip("Public variables set in the Inspector, should have a Tooltip")]
-      public static string BankName;
-      
-	  /// <summary>  
-	  /// They should also have a summary
-	  /// </summary>
-      public static decimal Reserves;
- 
-	  public string BankName;
-	  public const string ShippingType = "DropShip";
-	  
-	  private float _timeToDie;
-	  
-	  #endregion
-	  
-	  #region Properties
-	  
-      public string Number {get; set;}
-      public DateTime DateOpened {get; set;}
-      public DateTime DateClosed {get; set;}
-      public decimal Balance {get; set;}
-            
-	  #endregion
-	 
-	  #region LifeCycle
-	  
-      public Awake()
-      {
-        // ...
-      }
-      
-      #endregion
-	  #region Public Methods
-	  
-      public AddObjectToBank()
-      {
-        // ...
-      }
-      
-      #endregion
-    }
-}
-```
-
-#### Script Templates
-To save some time you can overwrite Unity's default script template with your own  to automatically setup the namespace and regions etc. See this Unity [support](https://support.unity3d.com/hc/en-us/articles/210223733-How-to-customize-Unity-script-templates) article to learn how.
-
-<a name="namespace"></a>
-#### Namespace
-Use a namespace to ensure your scoping of classes/enum/interface/etc won't conflict with existing ones from other namespaces or the global namespace. The project should at minimum use the projects name for the Namespace to prevent conflicts with any imported Third Party assets.
-
-#### All Public Functions Should Have A Summary
-
-Simply, any function that has an access modifier of Public should have its summary filled out. 
-
-```
-/// <summary>
-/// Fire a gun
-/// </summary>
-public void Fire()
-{
-// Fire the gun.
-}
-```
-
-#### Foldout Groups
-If a class has only a small number of variables, Foldout Groups are not required.
-
-If a class has a moderate amount of variables (5-10), all [Serializable](#serializable) variables should have a non-default Foldout Group assigned. A common category is `Config`.
-
-To create Foldout Groups there are 2 options in Unity. 
-
-* The first is to define a `[Serializable] public Class` inside the main class however this can have a performance impact. This allows the use of the same variable name to be shared.
-* The second option is to use the Foldout Group Attribute available with [Odin Inspector](https://odininspector.com/).
-
-```
-[[Serializable](https://docs.unity3d.com/ScriptReference/Serializable.html)]
-public struct PlayerStats
-	{
-        public int MovementSpeed;
-    }
+美术灯光及后期场景
+    Sun
+    Lights
+    Sky and Fog Volume
+    PostProcessing
     
-[FoldoutGroup("Interactable")]
-public int MovementSpeed = 1;
+逻辑场景（策划和程序管理）
+    Cameras
+    _Dynamic
+       Actors
+       Items
+       ...
 ```
 
-#### Commenting
-Comments should be used to describe intention, algorithmic overview, and/or logical flow.
-It would be ideal if from reading the comments alone someone other than the author could understand a function’s intended behavior and general operation.
+### 设置要求
 
-While there are no minimum comment requirements and certainly some very small routines need no commenting at all, it is hoped that most routines will have comments reflecting the programmer’s intent and approach.
-
-##### Comment Style
-Place the comment on a separate line, not at the end of a line of code.
-
-Begin comment text with an uppercase letter.
-
-End comment text with a period.
-
-Insert one space between the comment delimiter (//) and the comment text, as shown in the following example.
-
-The // (two slashes) style of comment tags should be used in most situations. Where ever possible, place comments above the code instead of beside it. Here are some examples:
-```
-        // Sample comment above a variable.
-        private int _myInt = 5;
-```
-
-#### Regions
-The `#region` directive enables you to collapse and hide sections of code in C# files. The ability to hide code selectively makes your files more manageable and easier to read. 
-```
-#region "This is the code to be collapsed"
-    Private components As System.ComponentModel.Container
-#endregion
-```
-
-#### Spacing
-Do use a single space after a comma between function arguments.
-
-Example: `Console.In.Read(myChar, 0, 1);`
-* Do not use a space after the parenthesis and function arguments.
-* Do not use spaces between a function name and parenthesis.
-* Do not use spaces inside brackets.
-<a name="3.1"></a>
-<a name="compiling"></a>
-### 3.2 Compiling
-All scripts should compile with zero warnings and zero errors. You should fix script warnings and errors immediately as they can quickly cascade into very scary unexpected behavior.
-
-Do *not* submit broken scripts to source control. If you must store them on source control, shelve them instead.
-
-### 3.3 Variables
-The words `variable` and `property` may be used interchangeably.
-
-#### Variable Naming
-
-##### Nouns
-All non-boolean variable names must be clear, unambiguous, and descriptive nouns. 
-
-##### Case
-All variables use PascalCase unless marked as [private](#privatevariables) which use camelCase. 
-
-Use PascalCase for abbreviations of 4 characters or more (3 chars are both uppercase).
-
-##### Considered Context
-All variable names must not be redundant with their context as all variable references in the class will always have context.
-
-###### Considered Context Examples:
-Consider a Class called `PlayerCharacter`.
-
-**Bad**
-
-* `PlayerScore`
-* `PlayerKills`
-* `MyTargetPlayer`
-* `MyCharacterName`
-* `CharacterSkills`
-* `ChosenCharacterSkin`
-
-All of these variables are named redundantly. It is implied that the variable is representative of the `PlayerCharacter` it belongs to because it is `PlayerCharacter` that is defining these variables.
-
-**Good**
-
-* `Score`
-* `Kills`
-* `TargetPlayer`
-* `Name`
-* `Skills`
-* `Skin`
-
-#### Variable Access Level
-In C#, variables have a concept of access level. Public means any code outside the class can access the variable. Protected means only the class and any child classes can access this variable internally. Private means only this class and no child classes can access this variable.
-Variables should only be made public if necessary.
-
-Prefer to use the attribute `[SerializeField]` instead of making a variable public.
-
-##### Local Variables
-Local variables should use camelCase.
-
-###### Implicitly Typed Local Variables
-Use implicit typing for local variables when the type of the variable is obvious from the right side of the assignment, or when the precise type is not important.
-```
-var var1 = "This is clearly a string.";
-var var2 = 27;
-var var3 = Convert.ToInt32(Console.ReadLine());
-// Also used in for loops
-for (var i = 0; i < bountyHunterFleets.Length; ++i) {};
-```
-
-Do not use var when the type is not apparent from the right side of the assignment.
-Example
-```
-int var4 = ExampleClass.ResultSoFar();
-```
-
-<a name="privatevariables"></a>
-##### Private Variables
-Private variables should have a prefix with a underscore `_myVariable` and use camelCase.
-
-Unless it is known that a variable should only be accessed within the class it is defined and never a child class, do not mark variables as private. Until variables are able to be marked `protected`, reserve private for when you absolutely know you want to restrict child class usage.
-
-##### Do _Not_ use Hungarian notation
-Do _not_ use Hungarian notation or any other type identification in identifiers
-```
-// Correct
-int counter;
-string name;
- 
-// Avoid
-int iCounter;
-string strName;
-```
-
-#### Variables accessible in the Editor
-
-##### Tooltips 
-All [Serializable](#serializable) variables should have a description in their `[Tooltip]` fields that explains how changing this value affects the behavior of the script.
-
-##### Variable Slider And Value Ranges
-All [Serializable](#serializable) variables should make use of slider and value ranges if there is ever a value that a variable should _not_ be set to.
-
-Example: A script that generates fence posts might have an editable variable named `PostsCount` and a value of -1 would not make any sense. Use the range fields `[Range(min, max)]` to mark 0 as a minimum.
-
-If an editable variable is used in a Construction Script, it should have a reasonable Slider Range defined so that someone can not accidentally assign it a large value that could crash the editor.
-
-A Value Range only needs to be defined if the bounds of a value are known. While a Slider Range prevents accidental large number inputs, an undefined Value Range allows a user to specify a value outside the Slider Range that may be considered 'dangerous' but still valid.
-
-#### Variable Types
-
-##### Booleans
-
-###### Boolean Prefix
-All booleans should be named in PascalCase but prefixed with a verb.
-
-Example: Use `isDead` and `hasItem`, **not** `Dead` and `Item`.
-
-###### Boolean Names
-All booleans should be named as descriptive adjectives when possible if representing general information.
-
-Try to not use verbs such as `isRunning`. Verbs tend to lead to complex states.
-
-###### Boolean Complex States
-Do not use booleans to represent complex and/or dependent states. This makes state adding and removing complex and no longer easily readable. Use an enumeration instead.
-
-Example: When defining a weapon, do **not** use `isReloading` and `isEquipping` if a weapon can't be both reloading and equipping. Define an enumeration named `WeaponState` and use a variable with this type named `WeaponState` instead. This makes it far easier to add new states to weapons.
-
-##### Enums
-Enums use PascalCase and use singular names for enums and their values. Exception: bit field enums should be plural. Enums can be placed outside the class space to provide global access.
-
-Example: 
-```
-public enum WeaponType
-{
-    Knife,
-    Gun
-}
-
-// Enum can have multiple values
-[Flags]
-public enum Dockings
-{
-	None = 0,
-	Top = 1,
-}
-
-public WeaponType Weapon
-```
-
-##### Arrays
-Arrays follow the same naming rules as above, but should be named as a plural noun.
-
-Example: Use `Targets`, `Hats`, and `EnemyPlayers`, not `TargetList`, `HatArray`, `EnemyPlayerArray`.
-
-##### Interfaces
-Interfaces are led with a capital `I` then followed with PascalCase.
-
-Example: ```public interface ICanEat { }```
-
-<a name="functions"></a>
-### 3.4 Functions, Events, and Event Dispatchers
-This section describes how you should author functions, events, and event dispatchers. Everything that applies to functions also applies to events, unless otherwise noted.
-
-#### Function Naming
-The naming of functions, events, and event dispatchers is critically important. Based on the name alone, certain assumptions can be made about functions. For example:
-
-* Is it a pure function?
-* Is it fetching state information?
-* Is it a handler?
-* What is its purpose?
-
-These questions and more can all be answered when functions are named appropriately.
-
-<a name="function-verbrule"></a>
-#### All Functions Should Be Verbs
-All functions and events perform some form of action, whether its getting info, calculating data, or causing something to explode. Therefore, all functions should start with verbs. They should be worded in the present tense whenever possible. They should also have some context as to what they are doing.
-
-Good examples:
-
-* `Fire` - Good example if in a Character / Weapon class, as it has context. Bad if in a Barrel / Grass / any ambiguous class.
-* `Jump` - Good example if in a Character class, otherwise, needs context.
-* `Explode`
-* `ReceiveMessage`
-* `SortPlayerArray`
-* `GetArmOffset`
-* `GetCoordinates`
-* `UpdateTransforms`
-* `EnableBigHeadMode`
-* `IsEnemy` - ["Is" is a verb.](http://writingexplained.org/is-is-a-verb)
-
-Bad examples:
-
-* `Dead` - Is Dead? Will deaden?
-* `Rock`
-* `ProcessData` - Ambiguous, these words mean nothing.
-* `PlayerState` - Nouns are ambiguous.
-* `Color` - Verb with no context, or ambiguous noun.
-
-#### Functions Returning Bool Should Ask Questions
-When writing a function that does not change the state of or modify any object and is purely for getting information, state, or computing a yes/no value, it should ask a question. This should also follow [the verb rule](#function-verbrule).
-
-This is extremely important as if a question is not asked, it may be assumed that the function performs an action and is returning whether that action succeeded.
-
-Good examples:
-
-* `IsDead`
-* `IsOnFire`
-* `IsAlive`
-* `IsSpeaking`
-* `IsHavingAnExistentialCrisis`
-* `IsVisible`
-* `HasWeapon` - ["Has" is a verb.](http://grammar.yourdictionary.com/parts-of-speech/verbs/Helping-Verbs.html)
-* `WasCharging` - ["Was" is past-tense of "be".](http://grammar.yourdictionary.com/parts-of-speech/verbs/Helping-Verbs.html) Use "was" when referring to 'previous frame' or 'previous state'.
-* `CanReload` - ["Can" is a verb.](http://grammar.yourdictionary.com/parts-of-speech/verbs/Helping-Verbs.html)
-
-Bad examples:
-
-* `Fire` - Is on fire? Will fire? Do fire?
-* `OnFire` - Can be confused with event dispatcher for firing.
-* `Dead` - Is dead? Will deaden?
-* `Visibility` - Is visible? Set visibility? A description of flying conditions?
-
-#### Event Handlers and Dispatchers Should Start With `On`
-Any function that handles an event or dispatches an event should start with `On` and continue to follow [the verb rule](#function-verbrule).
-
-Good examples:
-
-* `OnDeath` - Common collocation in games
-* `OnPickup`
-* `OnReceiveMessage`
-* `OnMessageRecieved`
-* `OnTargetChanged`
-* `OnClick`
-* `OnLeave`
-
-Bad examples:
-
-* `OnData`
-* `OnTarget`
-
-**[⬆ Back to Top](#table-of-contents)**
-<a name="anc"></a>
-<a name="4"></a>
-
-## 4. Asset Naming Conventions
-Naming conventions should be treated as law. A project that conforms to a naming convention is able to have its assets managed, searched, parsed, and maintained with incredible ease.
-
-Most things are prefixed with the prefix generally being an acronym of the asset type followed by an underscore.
-
-**Assets use [PascalCase](#cases)**
-
-<a name="base-asset-name"></a>
-<a name="4.1"></a>
-### 4.1 Base Asset Name - `Prefix_BaseAssetName_Variant_Suffix`
-All assets should have a _Base Asset Name_. A Base Asset Name represents a logical grouping of related assets. Any asset that is part of this logical group 
-should follow the the standard of  `Prefix_BaseAssetName_Variant_Suffix`.
-
-Keeping the pattern `Prefix_BaseAssetName_Variant_Suffix` in mind and using common sense is generally enough to warrant good asset names. Here are some detailed rules regarding each element.
-
-`Prefix` and `Suffix` are to be determined by the asset type through the following [Asset Name Modifier](#asset-name-modifiers) tables.
-
-`BaseAssetName` should be determined by short and easily recognizable name related to the context of this group of assets. For example, if you had a character named Bob, all of Bob's assets would have the `BaseAssetName` of `Bob`.
-
-For unique and specific variations of assets, `Variant` is either a short and easily recognizable name that represents logical grouping of assets that are a subset of an asset's base name. For example, if Bob had multiple skins these skins should still use `Bob` as the `BaseAssetName` but include a recognizable `Variant`. An 'Evil' skin would be referred to as `Bob_Evil` and a 'Retro' skin would be referred to as `Bob_Retro`.
-
-For unique but generic variations of assets, `Variant` is a two digit number starting at `01`. For example, if you have an environment artist generating nondescript rocks, they would be named `Rock_01`, `Rock_02`, `Rock_03`, etc. Except for rare exceptions, you should never require a three digit variant number. If you have more than 100 assets, you should consider organizing them with different base names or using multiple variant names.
-
-Depending on how your asset variants are made, you can chain together variant names. For example, if you are creating flooring assets for an Arch Viz project you should use the base name `Flooring` with chained variants such as `Flooring_Marble_01`, `Flooring_Maple_01`, `Flooring_Tile_Squares_01`.
-
-<a name="1.1-examples"></a>
-#### Examples
-
-##### Character
-
-| Asset Type               | Asset Name   |
-| ------------------------ | ------------ |
-| Skeletal Mesh            | SK_Bob       |
-| Material                 | M_Bob        |
-| Texture (Diffuse/Albedo) | T_Bob_D      |
-| Texture (Normal)         | T_Bob_N      |
-| Texture (Evil Diffuse)   | T_Bob_Evil_D |
-
-##### Prop
-
-| Asset Type               | Asset Name   |
-| ------------------------ | ------------ |
-| Static Mesh (01)         | SM_Rock_01   |
-| Static Mesh (02)         | SM_Rock_02   |
-| Static Mesh (03)         | SM_Rock_03   |
-| Material                 | M_Rock       |
-| Material Instance (Snow) | MI_Rock_Snow |
-
-<a name="asset-name-modifiers"></a>
-### 4.2 Asset Name Modifiers
-
-When naming an asset use these tables to determine the prefix and suffix to use with an asset's [Base Asset Name](#base-asset-name).
-
-#### Sections
-
-> 4.2.1 [Most Common](#anc-common)
-
-> 4.2.2 [Animations](#anc-animations)
-
-> 4.2.3 [Artificial Intelligence](#anc-ai)
-
-> 4.2.4 [Prefabs](#anc-prefab)
-
-> 4.2.5 [Materials](#anc-materials)
-
-> 4.2.6 [Textures](#anc-textures)
-
-> 4.2.7 [Miscellaneous](#anc-misc)
-
-> 4.2.8 [Physics](#anc-physics)
-
-> 4.2.9 [Audio](#anc-audio)
-
-> 4.2.10 [User Interface](#anc-ui)
-
-> 4.2.11 [Effects](#anc-effects)
-
-<a name="anc-common"></a>
-#### Most Common
-
-| Asset Type              | Prefix     | Suffix     | Notes                            |
-| ----------------------- | ---------- | ---------- | -------------------------------- |
-| Level / Scene           |  *          |            | [Should be in a folder called Levels.](#levels) e.g. `Levels/A4_C17_Parking_Garage.unity` |
-| Level (Persistent)      |            | _P         |                                  |
-| Level (Audio)           |            | _Audio     |                                  |
-| Level (Lighting)        |            | _Lighting  |                                  |
-| Level (Geometry)        |            | _Geo       |                                  |
-| Level (Gameplay)        |            | _Gameplay  |                                  |
-| Prefab                  |        |            |                                  |
-| Material                | M_         |            |                                  |
-| Static Mesh             | SM_       |            |                                  |
-| Skeletal Mesh           | SK_       |            |                                  |
-| Texture                 | T_         | _?         | See [Textures](#anc-textures)    |
-| Particle System         | PS_       |            |                                  |
-
-<a name="anc-models"></a>
-
-#### 4.2.1a 3D Models (FBX Files)
-
-PascalCase
-
-| Asset Type    | Prefix | Suffix | Notes |
-| ------------- | ------ | ------ | ----- |
-| Characters    | CH_    |        |       |
-| Vehicles      | VH_    |        |       |
-| Weapons       | WP_    |        |       |
-| Static Mesh   | SM_    |        |       |
-| Skeletal Mesh | SK_    |        |       |
-| Skeleton      | SKEL_  |        |       |
-| Rig           | RIG_   |        |       |
-
-#### 4.2.1b 3d Models (3ds Max)
-
-All meshes in 3ds Max are lowercase to differentiate them from their FBX export.
-
-| Asset Type    | Prefix | Suffix      | Notes                                   |
-| ------------- | ------ | ----------- | --------------------------------------- |
-| Mesh          |        | _mesh_lod0* | Only use LOD suffix if model uses LOD's |
-| Mesh Collider |        | _collider   |                                         |
-
-<a name="anc-animations"></a>
-
-#### 4.2.2 Animations 
-| Asset Type           | Prefix | Suffix | Notes |
-| -------------------- | ------ | ------ | ----- |
-| Animation Clip       | A_     |        |       |
-| Animation Controller | AC_    |        |       |
-| Avatar Mask          | AM_    |        |       |
-| Morph Target         | MT_    |        |       |
-
-<a name="anc-ai"></a>
-#### 4.2.3 Artificial Intelligence
-
-| Asset Type              | Prefix     | Suffix     | Notes                            |
-| ----------------------- | ---------- | ---------- | -------------------------------- |
-| AI Controller           | AIC_     |            |                                  |
-| Behavior Tree           | BT_      |            |                                  |
-| Blackboard              | BB_       |            |                                  |
-| Decorator               | BTDecorator_ |          |                                  |
-| Service                 | BTService_ |            |                                  |
-| Task                    | BTTask_  |            |                                  |
-| Environment Query       | EQS_     |            |                                  |
-| EnvQueryContext         | EQS_     | Context    |                                  |
-
-<a name="anc-prefab"></a>
-#### 4.2.4 Prefabs
-
-| Asset Type              | Prefix     | Suffix     | Notes                            |
-| ----------------------- | ---------- | ---------- | -------------------------------- |
-| Prefab         |        |            |                                  |
-| Prefab Instance         | I       |            |                                  |
-| Scriptable Object       |     |        | Assigned "Blueprint" label in Editor |
-
-<a name="anc-materials"></a>
-
-#### 4.2.5 Materials
-| Asset Type        | Prefix | Suffix | Notes |
-| ----------------- | ------ | ------ | ----- |
-| Material          | M_     |        |       |
-| Material Instance | MI_    |        |       |
-| Physical Material | PM_    |        |       |
-
-<a name="anc-textures"></a>
-
-#### 4.2.6 Textures
-| Asset Type              | Prefix     | Suffix     | Notes                            |
-| ----------------------- | ---------- | ---------- | -------------------------------- |
-| Texture                 | T_         |            |                                  |
-| Texture (Diffuse/Albedo/Base Color)| T_ | _D      |                                  |
-| Texture (Normal)        | T_         | _N         |                                  |
-| Texture (Roughness)     | T_         | _R         |                                  |
-| Texture (Alpha/Opacity) | T_         | _A         |                                  |
-| Texture (Ambient Occlusion) | T_     | _AO      |                                  |
-| Texture (Bump)          | T_         | _B         |                                  |
-| Texture (Emissive)      | T_         | _E         |                                  |
-| Texture (Mask)          | T_         | _M         |                                  |
-| Texture (Specular)      | T_         | _S         |                                  |
-| Texture (Packed)        | T_         | _*         | See notes below about [packing](#anc-textures-packing). |
-| Texture Cube            | TC_       |            |                                  |
-| Media Texture           | MT_       |            |                                  |
-| Render Target           | RT_       |            |                                  |
-| Cube Render Target      | RTC_     |            |                                  |
-| Texture Light Profile   | TLP_     |            |                                  |
-
-<a name="anc-textures-packing"></a>
-
-#### 4.2.6.1 Texture Packing
-It is common practice to pack multiple layers of texture data into one texture. An example of this is packing Emissive, Roughness, Ambient Occlusion together as the Red, Green, and Blue channels of a texture respectively. To determine the suffix, simply stack the given suffix letters from above together, e.g. `_ERO`.
-
-> It is generally acceptable to include an Alpha/Opacity layer in your Diffuse/Albedo's alpha channel and as this is common practice, adding `A` to the `_D` suffix is optional.
-
-Packing 4 channels of data into a texture (RGBA) is not recommended except for an Alpha/Opacity mask in the Diffuse/Albedo's alpha channel as a texture with an alpha channel incurs more overhead than one without.
-<a name="anc-misc"></a>
-
-#### 4.2.7 Miscellaneous
-
-| Asset Type                      | Prefix | Suffix | Notes |
-| ------------------------------- | ------ | ------ | ----- |
-| Universal Render Pipeline Asset | URP_   |        |       |
-| Post Process Volume Profile     | PP_    |        |       |
-| User Interface                  | UI_    |        |       |
-
-<a name="anc-physics"></a>
-#### 4.2.8 Physics
-
-| Asset Type        | Prefix | Suffix | Notes |
-| ----------------- | ------ | ------ | ----- |
-| Physical Material | PM_    |        |       |
-
-<a name="anc-audio"></a>
-
-#### 4.2.9 Audio
-
-| Asset Type     | Prefix | Suffix | Notes                                                        |
-| -------------- | ------ | ------ | ------------------------------------------------------------ |
-| Audio Clip     | A_     |        |                                                              |
-| Audio Mixer    | MIX_   |        |                                                              |
-| Dialogue Voice | DV_    |        |                                                              |
-| Audio Class    |        |        | No prefix/suffix. Should be put in a folder called AudioClasses |
-
-<a name="anc-ui"></a>
-#### 4.2.10 User Interface
-| Asset Type       | Prefix | Suffix | Notes |
-| ---------------- | ------ | ------ | ----- |
-| Font             | Font_  |        |       |
-| Texture (Sprite) | T_     | _GUI   |       |
-
-<a name="anc-effects"></a>
-#### 4.2.11 Effects
-| Asset Type      | Prefix | Suffix | Notes |
-| --------------- | ------ | ------ | ----- |
-| Particle System | PS_    |        |       |
-**[⬆ Back to Top](#table-of-contents)**
-
-<a name="asset-workflows"></a>
-
-## 5. Asset Workflows
-
-This section describes best practices for creating and importing assets usable in Unity.
-
-<a name="toc"></a>
-### Sections
-
-> 5.1 [Unity Asset Import Settings](#unityimport)
->
-> 5.2 [3ds Max](#3dsmax)
->
-> 5.3 [Textures](#textures)
->
-> 5.4 [Audio](#audio)
-
-<a name="unityimport"></a>
-
-### 5.1 Unity Asset Import Settings
-
-Unity's [AssetPostprocessor](https://docs.unity3d.com/ScriptReference/AssetPostprocessor.html) lets you hook into the import pipeline and run scripts prior to or after importing assets. This allows you to enforce import settings when assets are first imported into the project. For example textures that end with `_N` can be marked as a Normal Map on import.
-
-Example guide for Import Settings:
-
-https://github.com/justinwasilenko/Unity-AssetPostProcessor
-
-<a name="3dsmax"></a>
-### 5.2 3ds Max
-
-Unity guide on importing from 3ds Max:
-
-https://docs.unity3d.com/2017.4/Documentation/Manual/HOWTO-ImportObjectMax.html
-
-Unity tutorial on the FBX Exporter Package for FBX roundtrip:
-
-https://learn.unity.com/project/3ds-max-to-unity-pipeline
-
-#### Setting up 3ds Max
-
-Unity uses 1 unit = 1 meter. Setup 3ds Max to use Meters by going to ```Customize/Units Setup/System Unit Setup``` and set to 1 Unit = 1 Meter. Using the correct scale is very important for correct Physics / GI / and VR interaction.
-
-Animation frame rate in 3ds Max should be set to 30fps. The ```Time Configuration``` dialog box has 3ds Max's FPS settings
-
-##### Working with Small Objects
-
-* Set ```Customize > Customize User Interface > Mouse Wheel Zoom Increment``` to 0.1m to stop over zooming
-
-* Turn on Viewport Clipping and set the slider on the side of the viewport to be able to zoom in on small meshes. (https://knowledge.autodesk.com/support/3ds-max/learn-explore/caas/sfdcarticles/sfdcarticles/Viewport-Clipping.html)
-
-#### Modeling in 3ds Max
-
-* Follow the [asset naming convention](#anc-models)
-* Avoid super long thin triangles (Speeds up tile based renderers & helps with proper GI baking)
-* Use Area and Angle Weighted Mesh Normals (Unity Import Setting or Create in 3ds Max)
-
-#### Exporting from 3ds Max into Unity
-
-##### Export Settings:
-
-- Triangulate On
-- Tangents and Binormals Off
-- Smoothing Groups On
-- Preserve edge orientation On
-- Units - Automatic Off / Scene Units converted to Meters
-- Axis Conversion Z-up
-
-Models created in 3ds Max use a different coordinate system then Unity. Models need to have their pivot point rotated +90 degrees on the X axis to import into Unity correctly.
-
-To do this quickly, open the MaxScript editor, paste this code and select and drag this code on to a Toolbar in 3ds Max to create a button that will run this script. It applies a Xform modifier to rotate the pivot before exporting.
-
-```
-fn RotateCreationPivot obj rot =
-(
-select obj
-modPanel.addModToSelection (XForm ()) ui:on
-obj.modifiers[#XForm].gizmo.rotation += rot as quat
-rotate obj (inverse rot as quat)
-)
-RotateCreationPivot $ (eulerToQuat(eulerAngles 90 0 0))
-```
-
-
-Script to rotate all objects in 3ds Max scene for export
-
-```
-(
-    mapped fn ProcessObjectsForUnity node =
-    (
-        resetxform node
-        tm = rotatexmatrix 90
-        tm.row4 = node.pos
-        node.transform = tm
-        node.objectoffsetrot = eulerangles -90 0 0
-    )
-    
-    ProcessObjectsForUnity geometry
-)
-```
-
-* Batch Exporter for 3ds Max (http://www.strichnet.com/improving-the-fbx-workflow-between-3ds-max-and-unity3d/)
-
-##### Exporting CAT Animation to FBX
-
-Bind normal bones to the CAT rig for use in skinning and exporting
-
-###### Bind Pose
-
-Set Motion Panel/Layer Manager/"Setup/Animation Mode" Toggle to ```Red```
-Select only the bones and the mesh you wish to export
-Export naming: ModelName.FBX
-
-###### Animation
-
-Set Motion Panel/Layer Manager/"Setup/Animation Mode" to ```Green```
-Select ONLY the bones required in your hierarchy (These should match the exact same bones used for Bind Pose), don't include the mesh.
-Export naming: ModelName@AnimationName.FBX
-The @ symbol is a special Unity naming convention allowing the animation to be bound to the Human.fbx in the Unity editor
-
-#### Importing from 3ds Max into Unity
-
-If importing only animation or bones from a FBX: 
-
-* Set ```Preserve Hierarchy Model``` import option to ```True```
-* Set ```Rig > Avatar Definition``` to ```Copy From Other Avatar```
-
-MaxListener Window, set width and height of selected bones, maybe objects too?
-$.width = 0.01
-$.height = 0.01
-
-**[⬆ Back to Top](#table-of-contents)**
-
-<a name="textures"></a>
-### 5.3 Textures
-
-* Textures follow the [naming convention](#anc-textures) found above. 
-* They are a power of two (For example, 512 x 512 or 256 x 1024).
-* Use Texture Atlases wherever possible.
-* 3D software should point to the Unity project textures for consistency when you save or export.
-* It is better to resize the texture in Photoshop then to use Unity’s compression options when the in game texture resolution is already known. This reduces the file size and import time of the texture into Unity.
-* When working with a high-resolution source PSD outside your Unity project use the same name for both the high-resolution and the imported Unity file. This allows quick iteration when swapping between the 2 textures.
-
-More information for importing textures can be found here: [https://docs.unity3d.com/Manual/ImportingTextures.html](https://docs.unity3d.com/Manual/ImportingTextures.html)
-
-Textures requiring the use of a Alpha channel should follow this guide: [https://docs.unity3d.com/Manual/HOWTO-alphamaps.html](https://docs.unity3d.com/Manual/HOWTO-alphamaps.html)
-
-##### Texture File Format
-
-All textures should be of the .PSD format. No layers should be included and only one Alpha channel in the imported file.
-
-**[⬆ Back to Top](#table-of-contents)**
-
-<a name="audio"></a>
-### 5.4 Audio
-
-Only import uncompressed audio files in to Unity using WAV or AIFF formats.
-
-Great guide on [Unity Audio Import Optimization](https://www.gamasutra.com/blogs/ZanderHulme/20190107/333794/Unity_Audio_Import_Optimisation__getting_more_BAM_for_your_RAM.php)
-
-**[⬆ Back to Top](#table-of-contents)**
-
-
-
-#### Article References:
-https://unity3d.com/learn/tutorials/topics/tips/large-project-organisation
-https://github.com/Allar/ue4-style-guide
-http://www.arreverie.com/blogs/unity3d-best-practices-folder-structure-source-control/
+- 所有空的对象应该定位在0,0,0，使用默认的旋转和缩放。
