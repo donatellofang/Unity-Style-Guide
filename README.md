@@ -707,3 +707,14 @@ M_C1_Black_1
 ### 设置要求
 
 - 所有空的对象应该定位在0,0,0，使用默认的旋转和缩放。
+
+
+# 参考
+
+[High Priority – Game Art 5 Essentials to Naming Conventions](https://highpriority.com/naming-conventions/#top)
+
+[Unity Style Guide](https://github.com/justinwasilenko/Unity-Style-Guide)
+
+[Gamemakin UE4 Style Guide](https://github.com/Allar/ue5-style-guide)
+
+[Unity商店资源命名案例](https://assetstore.unity.com/packages/3d/environments/historic/ancient-temple-ruins-180254)
